@@ -1,0 +1,30 @@
+Options -Indexes
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\.xn--phnix-buffet-5ib\.de$ [NC]
+RewriteRule ^ https://www.xn--phnix-buffet-5ib.de%{REQUEST_URI} [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+RewriteRule ^(buffet|live-grill|sushi|speisekarte|kontakt|impressum|datenschutz)/?$ $1.html [R=301,L]
+RewriteRule ^reservierung/?$ kontakt.html [R=301,L]
+</IfModule>
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json application/xml text/xml text/plain image/svg+xml
+</IfModule>
+<IfModule mod_mime.c>
+AddType image/webp .webp
+</IfModule>
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+<FilesMatch "\.(webp|css|js)$">
+Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+<FilesMatch "\.(html)$">
+Header set Cache-Control "no-cache, must-revalidate"
+</FilesMatch>
+<FilesMatch "\.(pdf|txt|xml)$">
+Header set Cache-Control "public, max-age=3600"
+</FilesMatch>
+</IfModule>

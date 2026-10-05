@@ -1,10 +1,16 @@
+document.documentElement.classList.add('js');
 const header=document.querySelector('.site-header');
 const toggle=document.querySelector('.menu-toggle');
 const nav=document.querySelector('.nav-links');
-const onScroll=()=>header?.classList.toggle('scrolled',window.scrollY>30);
+const mobile=window.matchMedia('(max-width:1000px)');
+const solidHeader=document.querySelector('main')?.classList.contains('legal');
+const onScroll=()=>header?.classList.toggle('scrolled',solidHeader||window.scrollY>30);
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
-toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');toggle.textContent=open?'×':'☰';});
-nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false');if(toggle) toggle.textContent='☰';}));
-const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function setMenu(open,restoreFocus=false){if(!nav||!toggle)return;nav.classList.toggle('open',open);nav.inert=mobile.matches&&!open;toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Menü schließen':'Menü öffnen');toggle.textContent=open?'×':'☰';if(restoreFocus)toggle.focus();}
+toggle?.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open'))setMenu(false,true)});
+document.addEventListener('click',e=>{if(mobile.matches&&nav?.classList.contains('open')&&!nav.contains(e.target)&&!toggle.contains(e.target))setMenu(false)});
+mobile.addEventListener('change',()=>setMenu(false));setMenu(false);
+if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.05});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
 document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
