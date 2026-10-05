@@ -1,0 +1,10 @@
+const header=document.querySelector('.site-header');
+const toggle=document.querySelector('.menu-toggle');
+const nav=document.querySelector('.nav-links');
+const onScroll=()=>header?.classList.toggle('scrolled',window.scrollY>30);
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');toggle.textContent=open?'×':'☰';});
+nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false');if(toggle) toggle.textContent='☰';}));
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());

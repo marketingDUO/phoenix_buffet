@@ -1,0 +1,49 @@
+name: Phönix Buffet zu Hetzner deployen
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: phoenix-buffet-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Website laden
+        uses: actions/checkout@v4
+
+      - name: SFTP-Werkzeug vorbereiten
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Fertige Website per SFTP veröffentlichen
+        shell: bash
+        env:
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          HETZNER_PORT: ${{ secrets.HETZNER_PORT }}
+          SSHPASS: ${{ secrets.HETZNER_PASSWORD }}
+        run: |
+          set -euo pipefail
+          SFTP_BATCH="$(mktemp)"
+
+          find dist -mindepth 1 -type d -printf '%P\n' \
+            | sort \
+            | awk '{ print "-mkdir \"" $0 "\"" }' > "$SFTP_BATCH"
+
+          find dist -type f -printf '%P\n' \
+            | sort \
+            | awk '{ print "put \"dist/" $0 "\" \"" $0 "\"" }' >> "$SFTP_BATCH"
+
+          printf 'bye\n' >> "$SFTP_BATCH"
+
+          sshpass -e sftp \
+            -oBatchMode=no \
+            -oStrictHostKeyChecking=no \
+            -P "$HETZNER_PORT" \
+            -b "$SFTP_BATCH" \
+            "$HETZNER_USER@$HETZNER_HOST"
