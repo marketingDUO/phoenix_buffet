@@ -6,8 +6,8 @@ RewriteCond %{HTTP_HOST} !^www\.xn--phnix-buffet-5ib\.de$ [NC]
 RewriteRule ^ https://www.xn--phnix-buffet-5ib.de%{REQUEST_URI} [R=301,L,NE]
 RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
 RewriteRule ^index\.html$ / [R=301,L]
-RewriteRule ^(buffet|live-grill|sushi|speisekarte|kontakt|impressum|datenschutz)/?$ $1.html [R=301,L]
-RewriteRule ^reservierung/?$ kontakt.html [R=301,L]
+RewriteRule ^(buffet|live-grill|sushi|speisekarte|kontakt|impressum|datenschutz)/?$ /$1.html [R=301,L]
+RewriteRule ^reservierung/?$ /kontakt.html [R=301,L]
 </IfModule>
 <IfModule mod_deflate.c>
 AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json application/xml text/xml text/plain image/svg+xml
