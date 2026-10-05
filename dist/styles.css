@@ -67,3 +67,6 @@ button,input,textarea,select{font:inherit}
 @media(max-width:680px){.brand-logo{width:112px;height:60px}.brand{min-width:112px}.grill-steps-section .step{padding:24px}}
 
 .grill-steps-section .image-credit{font-size:12px;color:rgba(255,255,255,.72);text-align:right;margin:20px 0 0}
+
+/* Clearly readable labels in the homepage buffet overview */
+#preise .price-card .tag{font-size:1rem;font-weight:700;line-height:1.4;letter-spacing:.08em;padding:10px 16px;max-width:100%;overflow-wrap:break-word}
