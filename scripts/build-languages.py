@@ -46,7 +46,7 @@ for p in sorted(dist.glob('*.html')):
  for tag in en.find_all(True):
   for attr in ['alt','aria-label']:
    if tag.get(attr):tag[attr]=translate(tag[attr])
-  for attr in ['src','href']:
+  for attr in ['src','href','poster']:
    val=tag.get(attr)
    if not val:continue
    if val=='/':tag[attr]='/en/'
